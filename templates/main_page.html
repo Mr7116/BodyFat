@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for ('static', filename='css/style.css') }}" >
+    <meta charset="UTF-8">
+    <title>Calculate Body Fat</title>
+</head>
+<body>
+  <div class="container">
+      <div class="Main-page-container">
+        <form action="" method="post">
+          <div class="flex-center-column border-login">
+            <div><h3>Calculate Body Fat</h3></div>
+            <div>
+                <div style="display: flex;">
+                    <div class="padding-login" >
+                        <p style="width: 80px;text-align: center;" >น้ำหนัก : </p>
+                        <input placeholder="น้ำหนัก" name="weight" id="weight" onkeypress="return onlyNumberKey(event)" value="{{request.form.weight }}" type="text">   
+                        <p> &nbsp; KG.</p>         
+                    </div>
+                    <div class="padding-login" >
+                        <p style="width: 80px;text-align: center;" >ส่วนสูง : </p>
+                        <input placeholder="ส่วนสูง" name="tallness" id="tallness" onkeypress="return onlyNumberKey(event)" value="{{request.form.tallness }}" type="text">  
+                        <p> &nbsp; CM.</p>           
+                    </div>
+                </div>
+                <div style="display: flex;">
+                    <div class="padding-login" >
+                        <p style="width: 80px;text-align: center;">อายุ   &nbsp;&nbsp;&nbsp; : </p>
+                        <input placeholder="อายุ" name="age" id="age" onkeypress="return onlyNumberKey(event)" value="{{request.form.age }}" type="text">
+                        <p>&nbsp; ปี</p>
+                    </div>
+                    <div class="padding-login" >
+                        <p style="width: 80px;text-align: center;" >เพศ &nbsp;&nbsp;&nbsp; : </p>
+                        <input type="radio" style="width: 20px;" name="gender" id="gender" required {{ check_radio_male }} value="male" > <span style="margin-top: 5px;margin-right: 5px;padding-left: 5px;padding-right: 10px;">ผู้ชาย</span> </input><br>
+                        <input type="radio" style="width: 20px;" name="gender" id="gender" required {{ check_radio_female }} value="female"> <span style="margin-top: 5px;padding-left: 5px;padding-right: 10px;">ผู้หญิง</span> </input><br>       
+                    </div>
+                </div>
+               
+            </div>
+            <div  class="padding-button"style="justify-content: center;" >
+              <button class="btn btn-default" style="margin-left: 30px;" type="submit"  >Calculate</button>            
+              <input class="btn btn-default" style="margin-left: 20px;" type="button"  value="reset" onclick="clearResult()">
+              <p hidden name="showResult" id="showResult" onchange="showResult()">{{ showResult }} </p>
+            </div>        
+          </div>
+        </form>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+      {% endif %}
+
+        <div id="result-container" class="flex-center-row border-login" style="justify-content: space-around;margin-top: 10px;display: none;">
+            <div style="height: 200px;">
+                <h3 style="text-align-last: center;">Body Fat</h3>
+                <div style="width: 450px;margin-top: 30px;padding-left: 40px;">
+                    <div style="padding: 3px;">
+                        <b style="display: inline;">ปริมาณไขมันในร่างกาย  :</b> <P style="display: inline;">{{ fat_percentage }} </P> <P style="display: inline;">% </P> 
+                    </div>
+                    <div style="padding: 3px;">
+                        <b>ปริมาณไขมันในร่างกายทั้งหมดคร่าว ๆ :  </b><P style="display: inline;">{{ body_fat }} </P> <P style="display: inline;">กิโลกรัม (KG.) </P> 
+                    </div>
+                </div>
+            </div>
+            <div style="height: 200px;">
+                <h3 style="text-align-last: center;">BMI</h3>
+                <div style="width: 450px;margin-top: 30px;padding-left: 50px;">
+                    <div style="padding: 3px;">
+                        <b style="display: inline;">ค่า BMI ของคุณคือ :</b> <P style="display: inline;"> {{ bmi }} </P>
+                    </div>
+                   <div style="padding: 3px;">
+                    <b>ผลทดสอบ :  </b><P style="display: inline;">{{ bmi_text }} </P>
+                   </div>
+                </div>
+               
+            </div>
+            
+          </div>
+
+
+      <!-- {% if messages %}
+        <p class="success"><strong>success:</strong> {{ success }}
+      {% endif %} -->
+      </div>
+  </div>
+  
+  <script>
+    function onlyNumberKey(evt) {
+          
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+    function clearResult(){
+    document.getElementById("weight").value = '';
+    document.getElementById("tallness").value = '';
+    document.getElementById("age").value = '';
+    document.getElementById("showResult").innerText = '';
+    var ele = document.getElementsByName("gender");
+    for(var i=0;i<ele.length;i++)
+        ele[i].checked = false;
+    var element = document.getElementById("result-container");
+    element.style.display = 'none';
+    console.log("clear")
+    }
+    var check_result = 'succeedful'
+    var element = document.getElementById("result-container");
+    var text_result = document.getElementById("showResult").textContent;
+    console.log(text_result)
+
+    if (text_result.includes(check_result)){
+        element.style.display = 'flex';
+        }
+    else  {
+        element.style.display = 'none';
+
+        }
+       
+
+    
+</script>
+</body>
+</html>

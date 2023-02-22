@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<script text="javascript">
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for ('static', filename='css/style.css') }}" >
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Sign up Calculate Body Fat</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="Main-container">
+          <form action="" method="post">
+            <div class="flex-center-column border-login">
+              <div><h3>Sign up</h3></div>
+              <div style="text-align: -webkit-center;margin-left: 10px">
+                <div class="padding-login" ><p style="width: 80px;text-align: center;" >Username : </p><input placeholder="Username" name="username" value="{{request.form.username }}" type="text"></div>
+              <div class="padding-login" ><p style="width: 80px;text-align: center;">Password  : </p><input placeholder="Password" name="password" value="{{request.form.password }}" type="password"></div>
+              <div class="padding-login" style="width: 400px;"><p style="width: 130px;text-align: center;">Confirm password  : </p><input placeholder="Confirm password" name="confirm_password" value="{{request.form.confirm_password }}" type="password"></div>
+              <div  class="padding-button"style="justify-content: center;" >
+                <input class="btn btn-default" style="margin-left: 30px;" type="submit" name="submit_button" value="ยืนยัน">
+                <input class="btn btn-default" style="margin-left: 10px;" type="submit" name="submit_button" value="ย้อนกลับ">
+
+              </div>
+
+              </div>        
+            </div>
+          </form>
+          {% if error %}
+          <p class="error"><strong>Error:</strong> {{ error }}
+        {% endif %}
+        
+        </div>
+    </div>
+  </body>
+</html>

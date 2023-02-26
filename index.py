@@ -1,10 +1,10 @@
-from flask import Flask, render_template ,redirect, url_for, request,flash
+from flask import Flask, render_template ,redirect, url_for, request,flash,session
 from werkzeug.security import generate_password_hash, check_password_hash
 from myDB import DataBase_Bodyfat
 
 app = Flask(__name__)
 db = DataBase_Bodyfat()
-
+app.secret_key = 'super secret key'
 def genpassword(password):
     hashed_value = generate_password_hash(password, method='sha256')
     return hashed_value
@@ -33,6 +33,8 @@ def login():
                  print('',list_user)
                  check_password = checkpassword(list_user["password"],password) 
                  if(check_password):
+                     session['user_id'] = int(list_user["user_id"])
+                     session['username'] = username
                      return redirect(url_for('Main'))
                  else:
                      error = 'Password incorrect.'
@@ -57,6 +59,7 @@ def register():
              password = request.form['password']
              confirm_password = request.form['confirm_password']
              check_username = db.check_username(username)
+             print(check_username)
              if len(check_username) > 0 :
                  error = 'Username already exist'
              else:
@@ -73,7 +76,9 @@ def register():
 
 @app.route('/Main', methods=['GET', 'POST'])
 def Main():
-    error = None
+    username = session.get('username')
+    user_id = session.get('user_id')
+    error = None 
     check_radio_male = None
     check_radio_female = None
     bmi = None
@@ -81,6 +86,7 @@ def Main():
     fat_percentage = None
     body_fat = None
     showResult = ''
+    # list_history = None
     if request.method == 'POST':
         if request.form['weight'] == "" or request.form['tallness'] == "" or request.form['age'] == "":
             error = 'กรุณากรอกข้อมูลครบถ้วน'
@@ -108,25 +114,19 @@ def Main():
             else : 
                 fat_percentage = round((((1.2) * bmi ) + (0.23 * age)) - 5.4, 2) 
                 body_fat = round((weight * fat_percentage) /100,2)
-            print(weight,tallness,age,gender,bmi,bmi_text,fat_percentage,body_fat,)
-            showResult = 'succeedful'
-    return render_template('main_page.html', error=error,check_radio_male=check_radio_male,check_radio_female=check_radio_female,bmi=bmi,bmi_text=bmi_text,fat_percentage=fat_percentage,body_fat=body_fat,showResult=showResult)
-
-def Insert_Data() :
-    error = None
-    check_radio_male = None
-    check_radio_female = None
-    bmi = None
-    bmi_text = None
-    fat_percentage = None
-    body_fat = None
-    showResult = ''
-    print("new pageeeeeee")
-    return render_template('main_page.html', error=error,check_radio_male=check_radio_male,check_radio_female=check_radio_female,bmi=bmi,bmi_text=bmi_text,fat_percentage=fat_percentage,body_fat=body_fat,showResult=showResult)
+            print(weight,tallness,age,gender,bmi,bmi_text,fat_percentage,body_fat)
+            count_insert = db.insert_history(username,bmi,bmi_text,fat_percentage,body_fat,user_id)
+            # print(count_insert)
+            if count_insert > 0 :
+                showResult = 'succeedful'
+    list_history = db.FindHistory(user_id) 
+    # print(list_history)
+    return render_template('main_page.html', error=error,check_radio_male=check_radio_male,check_radio_female=check_radio_female,bmi=bmi,bmi_text=bmi_text,fat_percentage=fat_percentage,body_fat=body_fat,showResult=showResult,list_history=list_history)
 
 
 
 
 if __name__ == '__main__':
+    
     app.debug = True
     app.run(host='0.0.0.0', port=8000)

@@ -46,6 +46,7 @@
             </div>        
           </div>
         </form>
+        
         {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}
       {% endif %}
@@ -77,7 +78,31 @@
             
           </div>
 
-
+          {% block content %}
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>NO.</th>
+        <th>BMI</th>
+        <th>BMI Reslut</th>
+        <th>Fat Percentage</th>
+        <th>Body Fat</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in list_history %}
+        <tr>
+          <td>{{ user.0 }}</td>
+          <td>{{ user.2 }}</td>
+          <td>{{ user.3 }}</td>
+          <td>{{ user.4 }}</td>
+          <td>{{ user.5 }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+        
       <!-- {% if messages %}
         <p class="success"><strong>success:</strong> {{ success }}
       {% endif %} -->
